@@ -1,0 +1,19 @@
+{
+  "name": "email-to-github-agent",
+  "version": "1.0.0",
+  "description": "AI Agent that reads support emails and creates GitHub issues",
+  "type": "module",
+  "main": "src/agent.js",
+  "scripts": {
+    "start": "node src/agent.js",
+    "scheduler": "node src/scheduler.js",
+    "auth": "node src/auth.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.0.2",
+    "@openai/agents": "^0.0.5",
+    "dotenv": "^16.4.5",
+    "googleapis": "^144.0.0",
+    "open": "^11.0.0"
+  }
+}
