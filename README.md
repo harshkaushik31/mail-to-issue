@@ -1,4 +1,4 @@
-# 📬 Email → GitHub Issue Agent (JavaScript)
+# 📬 Email → GitHub Issue Agent
 
 An AI agent built with the **OpenAI Agents SDK** (JS) that monitors a support
 inbox and automatically creates structured GitHub issues from incoming emails.
@@ -24,7 +24,7 @@ Gmail Inbox (support@xyz.com)
   createGithubIssue()        ← GitHub REST API
         │
         ▼
-   GitHub Issue ✅  +  email marked as read
+   GitHub Issue  +  email marked as read
 ```
 
 ---
@@ -37,6 +37,7 @@ email-to-github-agent-js/
 │   ├── agent.js        ← Agent definition + entry point
 │   ├── tools.js        ← fetchUnreadEmails, listGithubLabels, createGithubIssue
 │   └── auth.js         ← Gmail OAuth2 helper
+|   └── scheduler.js    ← A schedule script that runs the agent in fixed interval of time
 ├── .env.example
 ├── package.json
 └── README.md
@@ -97,20 +98,20 @@ node src/scheduler.js --interval 2
 **Title:** `Login page returns 500 error for SSO users`
 
 ```markdown
-## 📧 Original Email
+## Original Email
 **From:** alice@customer.com
 **Date:** Tue, 24 Mar 2026 09:12:00 +0000
 **Subject:** Can't log in with company SSO
 
-## 📝 Summary
+## Summary
 The customer reports a 500 Internal Server Error when attempting to log in
 using SSO via their Okta IdP. The issue started after the March 20 deployment.
 
-## 🔍 Details
+## Details
 Hi team, since yesterday our whole team can't log in to the dashboard.
 We use Okta SSO. The error says 500 Internal Server Error…
 
-## 🏷️ Suggested Priority
+## Suggested Priority
 High — production outage affecting the customer's entire organisation.
 ```
 **Labels applied:** `bug`, `high-priority`
