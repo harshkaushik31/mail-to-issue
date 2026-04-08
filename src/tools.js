@@ -1,11 +1,8 @@
-/**
- * tools.js — OpenAI Agent function tools
- *
- * Three tools:
- *  • fetchUnreadEmails   — reads unread emails from the support inbox
- *  • listGithubLabels    — lists available labels in the GitHub repo
- *  • createGithubIssue   — creates an issue and marks the email as read
- */
+//  Three tools:
+//   • fetchUnreadEmails   — reads unread emails from the support inbox
+//   • listGithubLabels    — lists available labels in the GitHub repo
+//   • createGithubIssue   — creates an issue and marks the email as read
+
 
 import { tool } from "@openai/agents";
 import { z }    from "zod";
@@ -21,9 +18,9 @@ const GITHUB_REPO_NAME  = process.env.GITHUB_REPO_NAME  ?? "";
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+//  Helpers 
 
-/** Recursively extract plain-text body from a Gmail message payload. */
+// Recursively extract plain-text body from a Gmail message payload.
 function decodeBody(payload) {
   if (payload.mimeType === "text/plain") {
     const data = payload.body?.data ?? "";
@@ -36,7 +33,7 @@ function decodeBody(payload) {
   return "";
 }
 
-/** Mark a Gmail message as read by removing the UNREAD label. */
+// Mark a Gmail message as read by removing the UNREAD label.
 async function markEmailRead(gmail, emailId) {
   try {
     await gmail.users.messages.modify({
@@ -50,8 +47,7 @@ async function markEmailRead(gmail, emailId) {
 }
 
 
-// ── Tool: fetchUnreadEmails ───────────────────────────────────────────────────
-
+// fetchUnreadEmails 
 export const fetchUnreadEmails = tool({
   name: "fetchUnreadEmails",
   description:
@@ -102,8 +98,7 @@ export const fetchUnreadEmails = tool({
 });
 
 
-// ── Tool: listGithubLabels ────────────────────────────────────────────────────
-
+//  listGithubLabels 
 export const listGithubLabels = tool({
   name: "listGithubLabels",
   description:
@@ -120,8 +115,7 @@ export const listGithubLabels = tool({
 });
 
 
-// ── Tool: createGithubIssue ───────────────────────────────────────────────────
-
+//  createGithubIssue 
 export const createGithubIssue = tool({
   name: "createGithubIssue",
   description:

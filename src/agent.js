@@ -1,21 +1,20 @@
-/**
- * agent.js — Support Triage Agent
- *
- * Reads unread support emails and creates structured GitHub issues
- * using the OpenAI Agents SDK.
- *
- * Usage:
- *   node src/agent.js
- */
+//  agent.js — Support Triage Agent
+//  Reads unread support emails and creates structured GitHub issues
+//  using the OpenAI Agents SDK.
+//  Usage:
+//    node src/agent.js
 
 import "dotenv/config";
 import { Agent, run } from "@openai/agents";
-import { fetchUnreadEmails, listGithubLabels, createGithubIssue } from "./tools.js";
+import {
+  fetchUnreadEmails,
+  listGithubLabels,
+  createGithubIssue,
+} from "./tools.js";
 
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? "support@xyz.com";
 
-// ── System prompt ─────────────────────────────────────────────────────────────
-
+//  System prompt
 const SYSTEM_PROMPT = `
 You are a support triage agent. Your job is to process unread emails from the
 support inbox (${SUPPORT_EMAIL}) and convert each one into a well-structured
@@ -28,18 +27,18 @@ GitHub issue.
    - A concise, descriptive **title** (not just the raw subject line).
    - A **body** in this exact Markdown format:
 
-     ## 📧 Original Email
+     ## Original Email
      **From:** <sender>
      **Date:** <date>
      **Subject:** <subject>
 
-     ## 📝 Summary
+     ## Summary
      <2–3 sentence summary of the customer's issue>
 
-     ## 🔍 Details
+     ## Details
      <Full email body, lightly cleaned up>
 
-     ## 🏷️ Suggested Priority
+     ## Suggested Priority
      <Low / Medium / High — with one sentence explaining why>
 
    - Appropriate **labels** from the available list (e.g. "bug", "question").
@@ -53,26 +52,26 @@ GitHub issue.
 Be concise and professional. Do not skip any unread email.
 `.trim();
 
-// ── Agent ─────────────────────────────────────────────────────────────────────
-
+//  Agent
 const supportAgent = new Agent({
-  name:         "SupportTriageAgent",
-  model:        "gpt-4o-mini",
+  name: "SupportTriageAgent",
+  model: "gpt-4o-mini",
   instructions: SYSTEM_PROMPT,
-  tools:        [fetchUnreadEmails, listGithubLabels, createGithubIssue],
+  tools: [fetchUnreadEmails, listGithubLabels, createGithubIssue],
 });
 
-// ── Entry point ───────────────────────────────────────────────────────────────
-
+//  Entry point
 export async function runAgent() {
-  console.log(`[${new Date().toLocaleTimeString()}] Starting support triage agent…\n`);
+  console.log(
+    `[${new Date().toLocaleTimeString()}] Starting support triage agent…\n`,
+  );
 
   const result = await run(
     supportAgent,
-    "Process all new unread support emails and create GitHub issues for each one."
+    "Process all new unread support emails and create GitHub issues for each one.",
   );
 
-  console.log("\n── Agent Output ──────────────────────────────────────────");
+  console.log("\n Agent Output ");
   console.log(result.finalOutput);
   return result.finalOutput;
 }
