@@ -99,9 +99,9 @@ node src/scheduler.js --interval 2
 
 ```markdown
 ## Original Email
-**From:** alice@customer.com
-**Date:** Tue, 24 Mar 2026 09:12:00 +0000
-**Subject:** Can't log in with company SSO
+From: alice@customer.com
+Date: Tue, 24 Mar 2026 09:12:00 +0000
+Subject: Can't log in with company SSO
 
 ## Summary
 The customer reports a 500 Internal Server Error when attempting to log in
