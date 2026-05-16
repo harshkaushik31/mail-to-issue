@@ -70,7 +70,7 @@ export const fetchUnreadEmails = tool({
       userId: "me",
       labelIds: ["INBOX", "UNREAD"],
       maxResults,
-      q: `to:${SUPPORT_EMAIL}`,
+      q: `to:${SUPPORT_EMAIL} -category:promotions -category:social -category:updates -category:forums is:unread`,
     });
 
     const messages = listRes.data.messages ?? [];
@@ -161,3 +161,31 @@ export const createGithubIssue = tool({
     }
   },
 });
+
+// skipEmail Tool
+
+export const skipEmail = tool({
+  name: "skipEmail",
+  description:
+    "Mark an email as read and skip it without creating a GitHub issue. " +
+    "Use this for emails that are NOT genuine human support requests: " +
+    "promotions, newsletters, automated notifications, security alerts, " +
+    "order/shipping updates, social media alerts, survey requests, " +
+    "noreply senders, or any email that does not require a human response.",
+  parameters: z.object({
+    emailId: z
+      .string()
+      .describe("The Gmail message ID to mark as read and skip."),
+    reason: z
+      .string()
+      .describe("Brief reason why this email is being skipped (for logging)."),
+  }),
+  async execute({ emailId, reason }) {
+    const auth  = await getGmailClient();
+    const gmail = google.gmail({ version: "v1", auth });
+    await markEmailRead(gmail, emailId);
+    console.log(`[skip] ${emailId} — ${reason}`);
+    return JSON.stringify({ skipped: true, reason });
+  },
+});
+ 
