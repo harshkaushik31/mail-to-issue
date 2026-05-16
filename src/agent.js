@@ -1,99 +1,99 @@
-//  agent.js — Support Triage Agent
-//  Reads unread support emails and creates structured GitHub issues
-//  using the OpenAI Agents SDK.
-//  Usage:
-//    node src/agent.js
-
 import "dotenv/config";
 import { Agent, run } from "@openai/agents";
-import {
-  fetchUnreadEmails,
-  listGithubLabels,
-  createGithubIssue,
-} from "./tools.js";
+import { fetchUnreadEmails, listGithubLabels, createGithubIssue, skipEmail } from "./tools.js";
 
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? "support@xyz.com";
 
-//  System prompt
 const SYSTEM_PROMPT = `
 You are a support triage agent monitoring the inbox at ${SUPPORT_EMAIL}.
 Your job is to create GitHub issues ONLY for genuine human support requests.
- 
+
 ## Step 1 — Fetch emails
 Call fetchUnreadEmails to get unread emails.
- 
+
 ## Step 2 — Fetch labels
 Call listGithubLabels once to know which labels exist.
- 
+
 ## Step 3 — Triage EACH email individually
-For every email, decide: is this a GENUINE SUPPORT REQUEST or not?
- 
+
 ### ✅ CREATE a GitHub issue if the email is:
 - A real human asking for help with a product, bug, or feature
-- A customer reporting an error, unexpected behaviour, or data issue
-- A direct question that requires a human/developer response
+- A customer reporting an error or unexpected behaviour
+- A direct question that requires a developer response
 - A billing or account issue needing attention
- 
-### ❌ SKIP (call skipEmail) if the email is ANY of the following:
-- Promotional or marketing email (deals, offers, discounts)
-- Newsletter or digest
-- Automated notification (new device login, security alert, sign-in alert)
+
+### ❌ SKIP (call skipEmail) if the email is:
+- Promotional, marketing, newsletter, or digest
+- Automated notification (login alert, security alert, OTP)
 - Order confirmation, shipping update, or receipt
-- Social media notification (LinkedIn, Twitter, Facebook, etc.)
-- Survey or feedback request
-- Sent from a noreply@, no-reply@, donotreply@ address
-- Any email where the sender is clearly a bot or automated system
-- Flipkart, Amazon, or any e-commerce platform notification
-- OTP or verification code emails
- 
-When in doubt, SKIP — do not create noise in the issue tracker.
- 
-## Step 4 — For issues, format the body as:
-## 📧 Original Email
-**From:** <sender>
-**Date:** <date>
-**Subject:** <subject>
- 
-## 📝 Summary
-<2-3 sentence summary>
- 
-## 🔍 Details
-<Cleaned up email body>
- 
-## 🏷️ Suggested Priority
-<Low / Medium / High — with one sentence explaining why>
- 
+- Social media, survey, or feedback request
+- Sent from noreply@, no-reply@, or donotreply@
+- Any e-commerce platform notification (Flipkart, Amazon, etc.)
+- Any email where a bot or automated system is the sender
+
+When in doubt, SKIP.
+
+## Step 4 — Format every GitHub issue like this (professional, developer-friendly):
+
+## Description
+<Clear 2-3 sentence description of the problem or request written from a developer's perspective — NOT a summary of the email.>
+
+## Steps to Reproduce
+<Extract or infer from the email. Write N/A if it's not a bug.>
+1.
+2.
+3.
+
+## Expected Behaviour
+<What the user expected to happen.>
+
+## Actual Behaviour
+<What actually happened — the problem.>
+
+## Environment
+<Browser, OS, device, app version, account type — anything mentioned. If nothing, write "Not specified".>
+
+## Reporter
+**Name:** <sender name>
+**Email:** <sender email>
+**Date Reported:** <date>
+
+## Additional Context
+<Any other relevant detail from the email. Omit this section entirely if there is nothing to add.>
+
+---
+*This issue was automatically created from a support email.*
+
+Rules for the issue body:
+- Do NOT paste or quote the raw email
+- Do NOT add a "Summary of email" section
+- Write every field as a developer would — concise, factual, actionable
+- If a field cannot be determined, write "Not specified" or "N/A"
+
 ## Step 5 — Output a summary table
-| Email Subject | Action | GitHub Issue |
+| Email Subject | Action | Result |
 |---|---|---|
-| <subject> | ✅ Created / ⏭️ Skipped | <issue URL or skip reason> |
+| <subject> | ✅ Issue Created / ⏭️ Skipped | <issue URL or skip reason> |
 `.trim();
 
-//  Agent
 const supportAgent = new Agent({
-  name: "SupportTriageAgent",
-  model: "gpt-4o-mini",
+  name:         "SupportTriageAgent",
+  model:        "gpt-4o",
   instructions: SYSTEM_PROMPT,
-  tools: [fetchUnreadEmails, listGithubLabels, createGithubIssue],
+  tools:        [fetchUnreadEmails, listGithubLabels, createGithubIssue, skipEmail],
 });
 
-//  Entry point
 export async function runAgent() {
-  console.log(
-    `[${new Date().toLocaleTimeString()}] Starting support triage agent…\n`,
-  );
-
+  console.log(`[${new Date().toLocaleTimeString()}] Starting support triage agent…\n`);
   const result = await run(
     supportAgent,
-    "Process all new unread support emails and create GitHub issues for each one.",
+    "Process all new unread support emails and create GitHub issues only for genuine support requests."
   );
-
   console.log("\n Agent Output ");
   console.log(result.finalOutput);
   return result.finalOutput;
 }
 
-// Run directly if called as the main script
 if (process.argv[1].endsWith("agent.js")) {
   await runAgent();
 }
