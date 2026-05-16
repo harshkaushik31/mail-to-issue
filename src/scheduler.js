@@ -1,5 +1,3 @@
-//  scheduler.js — Poll for new support emails on a fixed interval.
-//   Usage:
 //   node src/scheduler.js              # default: every 5 minutes
 //   node src/scheduler.js --interval 2 # every 2 minutes
 

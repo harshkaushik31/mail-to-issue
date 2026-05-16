@@ -31,7 +31,7 @@ function getAuthCodeViaLocalServer(oAuth2Client) {
       }
 
       res.end(`
-        <h2>✅ Authentication successful!</h2>
+        <h2> Authentication successful!</h2>
         <p>You can close this tab and return to your terminal.</p>
       `);
       server.close();
@@ -45,7 +45,7 @@ function getAuthCodeViaLocalServer(oAuth2Client) {
         prompt:      "consent",   
       });
 
-      console.log(`\n🔐 Opening your browser for Gmail authorisation…`);
+      console.log(`\n Opening your browser for Gmail authorisation…`);
       console.log(`   If it doesn't open automatically, visit:\n   ${authUrl}\n`);
 
       try {
@@ -97,7 +97,7 @@ export async function getGmailClient() {
   oAuth2Client.setCredentials(tokens);
   fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens, null, 2));
 
-  console.log("✅ token.json saved — you won't need to do this again.\n");
+  console.log(" token.json saved — you won't need to do this again.\n");
   return oAuth2Client;
 }
 
