@@ -1,4 +1,4 @@
-# 📬 Email → GitHub Issue Agent
+# Email → GitHub Issue Agent
 
 An AI agent built with the **OpenAI Agents SDK** (JS) that monitors a support
 inbox and automatically creates structured GitHub issues from incoming emails.
