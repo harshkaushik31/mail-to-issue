@@ -98,21 +98,28 @@ node src/scheduler.js --interval 2
 **Title:** `Login page returns 500 error for SSO users`
 
 ```markdown
-## Original Email
-From: alice@customer.com
-Date: Tue, 24 Mar 2026 09:12:00 +0000
-Subject: Can't log in with company SSO
+## Description
+API responses in the Agent SDK are experiencing unusually long load times.    
 
-## Summary
-The customer reports a 500 Internal Server Error when attempting to log in
-using SSO via their Okta IdP. The issue started after the March 20 deployment.
+## Steps to Reproduce   
+1. Initiate a request using the Agent SDK.
+2. Observe the response time.
+3. Compare it to expected performance.
 
-## Details
-Hi team, since yesterday our whole team can't log in to the dashboard.
-We use Okta SSO. The error says 500 Internal Server Error…
+## Expected Behaviour
+The API should return responses in a timely manner consistent with service-level agreements.
 
-## Suggested Priority
-High — production outage affecting the customer's entire organisation.
+## Actual Behaviour
+Responses are taking significantly longer than expected.
+
+## Environment
+1. OS - Windows
+2. Browser - Chrome
+
+## Reporter
+Name: Harsh Kaushik
+Email: harsh.kaushik10b@gmail.com
+Date Reported: Sat, 16 May 2026
 ```
 **Labels applied:** `bug`, `high-priority`
 
