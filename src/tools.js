@@ -70,7 +70,7 @@ export const fetchUnreadEmails = tool({
       userId: "me",
       labelIds: ["INBOX", "UNREAD"],
       maxResults,
-      q: `to:${SUPPORT_EMAIL} -category:promotions -category:social -category:updates -category:forums is:unread`,
+      q: `-category:promotions -category:social -category:updates -category:forums is:unread`,
     });
 
     const messages = listRes.data.messages ?? [];
@@ -88,7 +88,7 @@ export const fetchUnreadEmails = tool({
           subject: headers["Subject"] ?? "(no subject)",
           from:    headers["From"]    ?? "unknown",
           date:    headers["Date"]    ?? "",
-          body:    body.slice(0, 4000),   // truncate very long emails
+          body:    body.slice(0, 4000),  
         };
       })
     );
